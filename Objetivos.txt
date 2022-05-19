@@ -1,7 +1,0 @@
--Tener una idea de cómo acceder a los contactos de whatsapp a través de voz
--Pasar lo de youtube(parar-reanudar-agrandar-buscar video3
--Revisar por url si youtube está abierto y poder usar los comandos (f, pausa, reanudar )
--Para saber cuando parar de buscar una pestaña, usamos un contador de pestañas. :)  (fotos de los íconos)
--Luego de enviar el mensaje de wpp, te pregunte si quieres enviar otro mensaje.
--Poder ver los mensajes que te escriben de por whatsapp
--Mover la pantalla de manera que el codigo funcione siempre
