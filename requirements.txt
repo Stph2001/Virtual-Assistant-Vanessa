@@ -1,0 +1,11 @@
+keyboard==0.13.5
+opencv-python==4.5.5.64
+psutil==5.9.0
+PyAudio @ file:///C:/Users/Sebasti%C3%A1n/Downloads/PyAudio-0.2.11-cp37-cp37m-win_amd64.whl
+PyAutoGUI==0.9.53
+pygame==2.1.2
+pyperclip==1.8.0
+PyScreeze==0.1.28
+pyttsx3==2.90
+SpeechRecognition==3.8.1
+spotipy==2.19.0
