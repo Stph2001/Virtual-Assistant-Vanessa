@@ -12,26 +12,24 @@ if __name__ == '__main__':
     with m as source:
         r2.adjust_for_ambient_noise(source)
         while True:
-            speak("Cuál es la canción?")
-            r, source, sng = AnswerSeconds(r2, source,2,10)
-            if len(sng) >= 3:
-                wb.open(f'spotify:search:')
-                sleep(15)
-                pyautogui.write(sng)
-                sleep(2)
-                pyautogui.press('enter')
+            speak('¿Qué desea buscar?')
+            r, source, text = AnswerSeconds(r2, source,2,10)
+            if len(text) >= 3:
+                speak('Abriendo')
+                wb.open("https://www.youtube.com/results?search_query=" + text)
+                sleep(3)
+                pyautogui.keyDown('alt')
+                pyautogui.keyDown('space')
+                pyautogui.press('x')
+                pyautogui.keyUp('space')
+                pyautogui.keyUp('alt')
                 sleep(1)
-                pyautogui.press('tab')
-                for i in range(2):
-                    pyautogui.press('enter')
-                    sleep(2)
+                pyautogui.moveTo(719, 320)
                 speak('Tarea Completada')
                 break
-            elif cnt > 0:
+            elif cnt >0:
                 speak('Lo lamento')
                 speak('No se encontraron resultados')
                 break
             speak('No entendí')
-            cnt += 1
-
-
+            cnt +=1

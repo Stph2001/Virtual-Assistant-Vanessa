@@ -40,4 +40,3 @@ def findAction(n):
             if n in v:
                 return True
     return False
-

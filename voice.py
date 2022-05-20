@@ -1,30 +1,28 @@
+import os
 import pyautogui
-import speech_recognition as sr
 from answer import Answer
 from speaking import speak
 import subprocess
 import datetime
 import webbrowser as wb
-from ReproduceSong import reproduceSong, songNumber
 from webFunctions import changeApp
 from readContacts import matcher
 from time import sleep
 import pygame
+from global_variables import r1, m
 
 dic = {'uno': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
        '11': 11, '12': 12, '13': 13, '14': 14, '15': 15}
 
 
-def speechRecognition():
-    sr.Microphone(device_index=1)
-    r = sr.Recognizer()
+def speechRecognition(r, m):
     r.energy_threshold = 3000
     r.dynamic_energy_threshold = False
-    m = sr.Microphone()
     aux = ' '
     with m as source:
         r.adjust_for_ambient_noise(source)
         pygame.mixer.music.play()
+        os.system('cls')
         while True:
             r, source, record = Answer(r, source)
             if 'otra vez' in record:
@@ -37,7 +35,7 @@ def speechRecognition():
             elif 'pantalla' in record and 'completa' in record:
                 pyautogui.hotkey('f')
 
-            elif 'clic' in record:
+            elif 'haz clic' in record:
                 pyautogui.click()
 
             elif all([any(['cierra' in record, 'cerrar' in record]), 'pestaña' in record]):
@@ -81,7 +79,7 @@ def speechRecognition():
             elif 'enter' in record or 'center' in record:
                 pyautogui.hotkey('enter')
 
-            elif ('minimiza' in record or 'minimizar' in record) and 'ventana' in record:
+            elif ('minimiza' in record or 'minimizar' in record) and ('ventana' in record or 'pantalla'):
                 with pyautogui.hold('alt'):
                     with pyautogui.hold('space'):
                         pyautogui.press('n')
@@ -112,28 +110,19 @@ def speechRecognition():
                 pyautogui.hotkey('up')
 
             elif 'youtube' in record:
-                speak('¿Qué deseas buscar?')
-                text = Answer(r, source, 2, 5)
-                if text == 'None': return
-                wb.open("https://www.youtube.com/results?search_query=" + text)
-                pyautogui.moveTo(719, 320)
+                cmd = f'python .\youtube.py'
+                p = subprocess.Popen(cmd, shell=True)
+                p.communicate()
 
-            elif 'spotify' in record:
-                speak("Cuál es la canción?")
-                r, source, song = Answer(r, source, 2, 5)
-                print(song)
-                if (song is ' ') or ("no sé" == song) or ("no lo sé" == song):
-                    speak("Cuál es el nombre del artista?")
-                    r, source, autor = Answer(r, source, 2, 5)
-                    if autor is ' ': return record
-                    reproduceSong(song, autor)
-                    speak("¿Cuál número de canción desea?")
-                    r, source, ans = Answer(r, source, 2, 5)
-                    if ans is ' ': return record
-                    number = dic[ans]
-                    songNumber(number)
-                else:
-                    reproduceSong(sng=song)
+            elif ('reproduce' in record or 'pon' in record) and 'canción' in record:
+                cmd = f'python .\\reproduceSong.py'
+                p = subprocess.Popen(cmd, shell=True)
+                p.communicate()
+
+            elif ('busca' in record or 'encuentra' in record) and ('artista' in record or 'cantante'):
+                cmd = f'python .\\findArtist.py'
+                p = subprocess.Popen(cmd, shell=True)
+                p.communicate()
 
             elif 'whatsapp' == record:
                 preguntas = ['¿A quién se lo quieres enviar?', '¿Cuál es el mensaje?']
@@ -144,7 +133,7 @@ def speechRecognition():
 
             elif 'escribe' in record or 'escribir' in record:
                 speak("¿Qué quieres escribir?")
-                r, source, ans = Answer(r, source, 2, 5)
+                r, source, ans = Answer(r, source)
                 if ans is None: return
                 pyautogui.write(ans)
 
@@ -155,9 +144,9 @@ def speechRecognition():
                 out, err = p.communicate()
                 speak(preguntas[0])
 
-            elif 'nombre' in record or 'nombres' in record:
+            elif ('elige' in record or 'lista' in record) and ('nombre' in record or 'nombres' in record):
                 speak("¿Qué nombre buscas?")
-                r, source, ans = Answer(r, source, 2, 8)
+                r, source, ans = Answer(r, source)
                 ans = ans.capitalize()
                 out = matcher(ans)
                 if len(out)==1:
@@ -168,16 +157,20 @@ def speechRecognition():
                         speak(name + 'ó ')
                         print(str(i+1)+': ' + name)
                     speak('Elige número de contacto')
-                    r, source, ans = Answer(r, source, 2, 8)
-                    if ans is ' ': return record
+                    r, source, ans = Answer(r, source)
+                    if ans is ' ': continue
                     if dic.get(ans):
                         number = dic[ans]
                         pyautogui.write(out[number-1])
 
             if record != ' ': aux = record
 
+        cmd = "python .\wpp.py"
+        p = subprocess.Popen(cmd, shell=True)
+        out, err = p.communicate()
+
 
 if __name__ == '__main__':
     pygame.mixer.init()
     pygame.mixer.music.load(".\sound.mp3")
-    speechRecognition()
+    speechRecognition(r1, m)
